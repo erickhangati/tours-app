@@ -3,7 +3,6 @@ import { NavLink, Outlet, useParams, useLocation } from 'react-router-dom';
 const Nav = () => {
   const { tourId } = useParams();
   const { pathname } = useLocation();
-  console.log(location);
 
   return (
     <>

@@ -22,6 +22,10 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('dev'));
 
+app.get('/', (req, res) => {
+  res.json('Welcome to Tours API');
+});
+
 app.use('/api/v1/tours', toursRoutes);
 app.use('/api/v1/tours/:id', toursRoutes);
 app.use('/api/v1/persons', personsRoutes);
