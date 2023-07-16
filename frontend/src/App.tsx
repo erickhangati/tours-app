@@ -5,7 +5,6 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom';
 
-import Home from '../pages/Home';
 import Tours from '../pages/Tours';
 import TourDetails from '../pages/TourDetails';
 import Login from '../pages/Login';
@@ -19,7 +18,7 @@ const router = createBrowserRouter(
       <Route path='/:tourId' element={<TourDetails />} />
       <Route path='/login' element={<Login />} />
       <Route path='/not-found' element={<NotFound />} />
-      <Route path='*' element={<NotFound />} />{' '}
+      <Route path='*' element={<NotFound />} />
     </Route>
   )
 );
