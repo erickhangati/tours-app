@@ -14,9 +14,7 @@ const ToursOverview = () => {
   const { isLoading } = useQuery({
     queryKey: ['tours'],
     queryFn: async () => {
-      const { data } = await axios.get(
-        'https://tours-app-api.vercel.app/api/v1/tours'
-      );
+      const { data } = await axios.get('/api/v1/tours');
       return data.data as Tours;
     },
     onSuccess(data) {
