@@ -13,7 +13,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ['https://tours-app-api.vercel.app'],
+    origin: ['https://tours-app-frontend.vercel.app'],
     methods: ['GET', 'POST', 'PATCH'],
     credentials: true,
   })
