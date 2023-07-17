@@ -73,7 +73,7 @@ const TourDetails = () => {
       );
     },
     onSuccess() {
-      navigate('/tours', { replace: true });
+      navigate('/', { replace: true });
       setTour(null);
     },
     onError: (error: any) => {
