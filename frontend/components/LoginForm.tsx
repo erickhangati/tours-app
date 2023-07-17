@@ -68,7 +68,7 @@ const LoginForm = () => {
       console.log(data);
       setFormValues(() => initialFormValues);
       setFormError(() => initialErrorValues);
-      const message = `User with email ${data.data.email} created!`;
+      const message = `User with email ${data.data.user.email} created!`;
       setResponse(() => ({ isError: false, message }));
     },
     onError(error: any) {
