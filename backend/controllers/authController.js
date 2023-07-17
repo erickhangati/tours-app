@@ -138,6 +138,8 @@ exports.restrictTo =
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
 
+  console.log(email);
+
   // GET USER
   const user = await User.findOne({ email });
 
@@ -164,7 +166,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
     res
       .status(200)
-      .json({ status: 'success', message: 'Reset token sent to email' });
+      .json({
+        status: 'success',
+        message: `Reset token sent to email ${email}`,
+      });
   } catch (error) {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;

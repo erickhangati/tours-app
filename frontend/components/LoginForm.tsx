@@ -45,6 +45,7 @@ const initialResponse = {
 
 const LoginForm = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [viewPassword, setViewPassword] = useState(false);
   const [formValues, setFormValues] = useState<FormData>(initialFormValues);
   const [formError, setFormError] = useState<ErrorData>(initialErrorValues);
@@ -107,10 +108,39 @@ const LoginForm = () => {
     },
   });
 
+  const { mutate: forgotPasswordMutate, isLoading: forgotPasswordIsLoading } =
+    useMutation({
+      mutationKey: ['forgot-password'],
+      mutationFn: async () => {
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/v1/users/forgot-password`,
+          { email: formValues.email }
+        );
+        return data;
+      },
+      onSuccess(data) {
+        console.log(data);
+        setFormValues(() => initialFormValues);
+        setFormError(() => initialErrorValues);
+        setResponse(() => ({ isError: false, message: data.message }));
+      },
+      onError(error: any) {
+        console.log(error);
+        setResponse(() => ({
+          isError: true,
+          message: error.response.data.message,
+        }));
+      },
+    });
+
   const loginErrorHandler = () => {
     if (!formValues.email) setFormError((prev) => ({ ...prev, email: true }));
     if (!formValues.password)
       setFormError((prev) => ({ ...prev, password: true }));
+  };
+
+  const forgotPasswordErrorHandler = () => {
+    if (!formValues.email) setFormError((prev) => ({ ...prev, email: true }));
   };
 
   const signupErrorHandler = () => {
@@ -124,13 +154,13 @@ const LoginForm = () => {
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLogin) {
+    if (isLogin && !isForgotPassword) {
       if (!formValues.email || !formValues.password) {
         loginErrorHandler();
         return;
       }
       loginMutate();
-    } else {
+    } else if (!isLogin && !isForgotPassword) {
       if (
         !formValues.name ||
         !formValues.email ||
@@ -140,9 +170,23 @@ const LoginForm = () => {
         signupErrorHandler();
         return;
       }
-
       signUpMutate();
+    } else if (isForgotPassword && !isLogin) {
+      if (!formValues.email) {
+        forgotPasswordErrorHandler();
+        return;
+      }
+      forgotPasswordMutate();
     }
+  };
+
+  const forgotPassword = () => {
+    setIsForgotPassword(() => true);
+    setIsLogin(() => false);
+    setResponse(() => ({
+      isError: false,
+      message: 'Enter your email',
+    }));
   };
 
   return (
@@ -157,7 +201,7 @@ const LoginForm = () => {
           {response?.message}
         </h2>
       )}
-      {!isLogin && (
+      {!isLogin && !isForgotPassword && (
         <input
           className='px-6 py-3 outline-none rounded-md border border-gray-400 border-solid'
           type='text'
@@ -185,35 +229,42 @@ const LoginForm = () => {
           setFormValues((prev) => ({ ...prev, email: event.target.value }))
         }
       />
-      <div className='relative'>
-        <input
-          className='px-6 py-3 outline-none rounded-md border border-gray-400 border-solid w-full'
-          type={viewPassword ? 'text' : 'password'}
-          id='password'
-          value={formValues?.password}
-          placeholder='Password'
-          style={{
-            border:
-              formError.password && !formValues.password ? '1px solid red' : '',
-          }}
-          onChange={(event) =>
-            setFormValues((prev) => ({ ...prev, password: event.target.value }))
-          }
-        />
-        {!viewPassword && (
-          <EyeIcon
-            className='absolute top-[50%] translate-y-[-50%] right-4'
-            onClick={() => setViewPassword((prev) => !prev)}
+      {!isForgotPassword && (
+        <div className='relative'>
+          <input
+            className='px-6 py-3 outline-none rounded-md border border-gray-400 border-solid w-full'
+            type={viewPassword ? 'text' : 'password'}
+            id='password'
+            value={formValues?.password}
+            placeholder='Password'
+            style={{
+              border:
+                formError.password && !formValues.password
+                  ? '1px solid red'
+                  : '',
+            }}
+            onChange={(event) =>
+              setFormValues((prev) => ({
+                ...prev,
+                password: event.target.value,
+              }))
+            }
           />
-        )}
-        {viewPassword && (
-          <EyeCrossedIcon
-            className='absolute top-[50%] translate-y-[-50%] right-4'
-            onClick={() => setViewPassword((prev) => !prev)}
-          />
-        )}
-      </div>
-      {!isLogin && (
+          {!viewPassword && (
+            <EyeIcon
+              className='absolute top-[50%] translate-y-[-50%] right-4'
+              onClick={() => setViewPassword((prev) => !prev)}
+            />
+          )}
+          {viewPassword && (
+            <EyeCrossedIcon
+              className='absolute top-[50%] translate-y-[-50%] right-4'
+              onClick={() => setViewPassword((prev) => !prev)}
+            />
+          )}
+        </div>
+      )}
+      {!isLogin && !isForgotPassword && (
         <div className='relative'>
           <input
             className='px-6 py-3 outline-none rounded-md border border-gray-400 border-solid w-full'
@@ -250,42 +301,76 @@ const LoginForm = () => {
           )}
         </div>
       )}
-      <button
-        className='px-6 py-3 text-white font-medium bg-green-600 hover:bg-green-600/70 transition rounded-md'
-        disabled={signupIsLoading}
-        style={{
-          backgroundColor: signupIsLoading ? '#e0e0e0' : '',
-        }}
-      >
-        {isLogin
-          ? loginIsLoading
-            ? 'Signing In...'
-            : 'Sign In'
-          : signupIsLoading
-          ? 'Signing Up...'
-          : 'Sign Up'}
-      </button>
+
+      {!isForgotPassword && (
+        <button
+          className='px-6 py-3 text-white font-medium bg-green-600 hover:bg-green-600/70 transition rounded-md'
+          disabled={signupIsLoading}
+          style={{
+            backgroundColor: signupIsLoading ? '#e0e0e0' : '',
+          }}
+        >
+          {isLogin
+            ? loginIsLoading
+              ? 'Signing In...'
+              : 'Sign In'
+            : signupIsLoading
+            ? 'Signing Up...'
+            : 'Sign Up'}
+        </button>
+      )}
+
+      {isForgotPassword && (
+        <button
+          className='px-6 py-3 text-white font-medium bg-green-600 hover:bg-green-600/70 transition rounded-md'
+          disabled={signupIsLoading}
+          style={{
+            backgroundColor: signupIsLoading ? '#e0e0e0' : '',
+          }}
+        >
+          {forgotPasswordIsLoading
+            ? 'Sending reset token...'
+            : 'Send reset token'}
+        </button>
+      )}
+
       {!isLogin && (
         <h2 className='text-slate-500'>
           Already have an account?{' '}
           <span
             className='cursor-pointer font-medium text-blue-600'
-            onClick={() => setIsLogin((prev) => !prev)}
+            onClick={() => {
+              setIsLogin((prev) => !prev);
+              setIsForgotPassword(() => false);
+              setResponse(() => initialResponse);
+            }}
           >
             Sign In
           </span>
         </h2>
       )}
       {isLogin && (
-        <h2 className='text-slate-500'>
-          Don't have an account?{' '}
-          <span
-            className='cursor-pointer font-medium text-blue-600'
-            onClick={() => setIsLogin((prev) => !prev)}
+        <div className='flex justify-between items-center'>
+          <h2 className='text-slate-500'>
+            Don't have an account?{' '}
+            <span
+              className='cursor-pointer font-medium text-blue-600'
+              onClick={() => {
+                setIsLogin((prev) => !prev);
+                setIsForgotPassword(() => false);
+                setResponse(() => initialResponse);
+              }}
+            >
+              Sign Up
+            </span>
+          </h2>
+          <h3
+            className='text-orange-400 cursor-pointer transition hover:text-orange-600'
+            onClick={forgotPassword}
           >
-            Sign Up
-          </span>
-        </h2>
+            Forgot password?
+          </h3>
+        </div>
       )}
     </form>
   );
