@@ -11,13 +11,7 @@ const globalErrorHandling = require('./controllers/errorController');
 
 const app = express();
 
-app.use(
-  cors({
-    origin: ['https://tours-app-frontend.vercel.app'],
-    methods: ['GET', 'POST', 'PATCH'],
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.use(cookieParser());
 app.use(express.json());
