@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 
+import EyeIcon from '../components/icons/EyeIcon';
+import EyeCrossedIcon from '../components/icons/EyeCrossedIcon';
+
 interface FormData {
   name: string;
   email: string;
@@ -42,6 +45,7 @@ const initialResponse = {
 
 const LoginForm = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [viewPassword, setViewPassword] = useState(false);
   const [formValues, setFormValues] = useState<FormData>(initialFormValues);
   const [formError, setFormError] = useState<ErrorData>(initialErrorValues);
   const [response, setResponse] = useState<ResponseData>(initialResponse);
@@ -95,6 +99,11 @@ const LoginForm = () => {
     },
     onError(error: any) {
       console.log(error.response.data);
+      setFormValues(() => initialFormValues);
+      setResponse(() => ({
+        isError: true,
+        message: error.response.data.message,
+      }));
     },
   });
 
@@ -176,40 +185,70 @@ const LoginForm = () => {
           setFormValues((prev) => ({ ...prev, email: event.target.value }))
         }
       />
-      <input
-        className='px-6 py-3 outline-none rounded-md border border-gray-400 border-solid'
-        type='text'
-        id='password'
-        value={formValues?.password}
-        placeholder='Password'
-        style={{
-          border:
-            formError.password && !formValues.password ? '1px solid red' : '',
-        }}
-        onChange={(event) =>
-          setFormValues((prev) => ({ ...prev, password: event.target.value }))
-        }
-      />
-      {!isLogin && (
+      <div className='relative'>
         <input
-          className='px-6 py-3 outline-none rounded-md border border-gray-400 border-solid'
-          type='text'
-          id='confirmPassword'
-          value={formValues?.confirmPassword}
-          placeholder='Confirm Password'
+          className='px-6 py-3 outline-none rounded-md border border-gray-400 border-solid w-full'
+          type={viewPassword ? 'text' : 'password'}
+          id='password'
+          value={formValues?.password}
+          placeholder='Password'
           style={{
             border:
-              formError.confirmPassword && !formValues.confirmPassword
-                ? '1px solid red'
-                : '',
+              formError.password && !formValues.password ? '1px solid red' : '',
           }}
           onChange={(event) =>
-            setFormValues((prev) => ({
-              ...prev,
-              confirmPassword: event.target.value,
-            }))
+            setFormValues((prev) => ({ ...prev, password: event.target.value }))
           }
         />
+        {!viewPassword && (
+          <EyeIcon
+            className='absolute top-[50%] translate-y-[-50%] right-4'
+            onClick={() => setViewPassword((prev) => !prev)}
+          />
+        )}
+        {viewPassword && (
+          <EyeCrossedIcon
+            className='absolute top-[50%] translate-y-[-50%] right-4'
+            onClick={() => setViewPassword((prev) => !prev)}
+          />
+        )}
+      </div>
+      {!isLogin && (
+        <div className='relative'>
+          <input
+            className='px-6 py-3 outline-none rounded-md border border-gray-400 border-solid w-full'
+            type={viewPassword ? 'text' : 'password'}
+            id='confirmPassword'
+            value={formValues?.confirmPassword}
+            placeholder='Confirm Password'
+            style={{
+              border:
+                formError.confirmPassword && !formValues.confirmPassword
+                  ? '1px solid red'
+                  : '',
+            }}
+            onChange={(event) =>
+              setFormValues((prev) => ({
+                ...prev,
+                confirmPassword: event.target.value,
+              }))
+            }
+          />
+
+          {!viewPassword && (
+            <EyeIcon
+              className='absolute top-[50%] translate-y-[-50%] right-4'
+              onClick={() => setViewPassword((prev) => !prev)}
+            />
+          )}
+
+          {viewPassword && (
+            <EyeCrossedIcon
+              className='absolute top-[50%] translate-y-[-50%] right-4'
+              onClick={() => setViewPassword((prev) => !prev)}
+            />
+          )}
+        </div>
       )}
       <button
         className='px-6 py-3 text-white font-medium bg-green-600 hover:bg-green-600/70 transition rounded-md'
