@@ -15,7 +15,7 @@ const ToursOverview = () => {
     queryKey: ['tours'],
     queryFn: async () => {
       const { data } = await axios.get(
-        'https://tours-app-api.vercel.app/api/v1/tours'
+        `${import.meta.env.VITE_API_URL}/api/v1/tours`
       );
       return data.data as Tours;
     },

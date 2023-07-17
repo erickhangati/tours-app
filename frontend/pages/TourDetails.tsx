@@ -17,7 +17,7 @@ const TourDetails = () => {
     queryKey: ['tour'],
     queryFn: async () => {
       const { data } = await axios.get(
-        `https://tours-app-api.vercel.app/api/v1/tours/${tourId}`
+        `${import.meta.env.VITE_API_URL}/api/v1/tours/${tourId}`
       );
       return data.data as Tour;
     },
@@ -43,7 +43,7 @@ const TourDetails = () => {
       };
 
       await axios.patch(
-        `https://tours-app-api.vercel.app/api/v1/tours/${tour?._id}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/tours/${tour?._id}`,
         {
           name: updatedName,
         }
@@ -69,7 +69,7 @@ const TourDetails = () => {
     mutationKey: ['tour'],
     mutationFn: async () => {
       await axios.delete(
-        `https://tours-app-api.vercel.app/api/v1/tours/${tour?._id}`
+        `${import.meta.env.VITE_API_URL}/api/v1/tours/${tour?._id}`
       );
     },
     onSuccess() {

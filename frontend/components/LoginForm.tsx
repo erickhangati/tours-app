@@ -49,12 +49,15 @@ const LoginForm = () => {
   const { mutate: signUpMutate, isLoading: signupIsLoading } = useMutation({
     mutationKey: ['login'],
     mutationFn: async () => {
-      const { data } = await axios.post('/api/v1/users/sign-up', {
-        name: formValues.name,
-        email: formValues.email,
-        password: formValues.password,
-        confirmPassword: formValues.confirmPassword,
-      });
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/users/sign-up`,
+        {
+          name: formValues.name,
+          email: formValues.email,
+          password: formValues.password,
+          confirmPassword: formValues.confirmPassword,
+        }
+      );
       return data;
     },
     onSuccess(data) {
@@ -76,10 +79,13 @@ const LoginForm = () => {
   const { mutate: loginMutate, isLoading: loginIsLoading } = useMutation({
     mutationKey: ['login'],
     mutationFn: async () => {
-      const { data } = await axios.post('/api/v1/users/login', {
-        email: formValues.email,
-        password: formValues.password,
-      });
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/users/login`,
+        {
+          email: formValues.email,
+          password: formValues.password,
+        }
+      );
       return data;
     },
     onSuccess(data) {
