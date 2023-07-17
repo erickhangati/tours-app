@@ -16,7 +16,9 @@ const TourDetails = () => {
   const { isLoading: queryIsLoading } = useQuery({
     queryKey: ['tour'],
     queryFn: async () => {
-      const { data } = await axios.get(`/api/v1/tours/${tourId}`);
+      const { data } = await axios.get(
+        `https://tours-app-api.vercel.app/api/v1/tours/${tourId}`
+      );
       return data.data as Tour;
     },
     onSuccess(data) {
@@ -40,9 +42,12 @@ const TourDetails = () => {
         name: updatedName,
       };
 
-      await axios.patch(`/api/v1/tours/${tour?._id}`, {
-        name: updatedName,
-      });
+      await axios.patch(
+        `https://tours-app-api.vercel.app/api/v1/tours/${tour?._id}`,
+        {
+          name: updatedName,
+        }
+      );
 
       return updatedTour as Tour;
     },
@@ -63,7 +68,9 @@ const TourDetails = () => {
   const { mutate: mutateDeleteTour, isLoading: deleteIsLoading } = useMutation({
     mutationKey: ['tour'],
     mutationFn: async () => {
-      await axios.delete(`/api/v1/tours/${tour?._id}`);
+      await axios.delete(
+        `https://tours-app-api.vercel.app/api/v1/tours/${tour?._id}`
+      );
     },
     onSuccess() {
       navigate('/tours', { replace: true });
