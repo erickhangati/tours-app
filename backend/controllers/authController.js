@@ -1,6 +1,7 @@
 const User = require('../models/usersModel');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
+const crypto = require('crypto');
 
 const { catchAsync } = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -138,8 +139,6 @@ exports.restrictTo =
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
 
-  console.log(email);
-
   // GET USER
   const user = await User.findOne({ email });
 
@@ -164,12 +163,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       message,
     });
 
-    res
-      .status(200)
-      .json({
-        status: 'success',
-        message: `Reset token sent to email ${email}`,
-      });
+    res.status(200).json({
+      status: 'success',
+      message: `Reset token sent to email ${email}`,
+    });
   } catch (error) {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
@@ -184,9 +181,35 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.resetPassword = async (req, res) => {
-  // const user = await User.findOne({ email: 'ekhangati@gmail.com' });
-  // user.createPasswordResetToken();
-  // await user.save({ validateBeforeSave: false });
-  res.status(200).json({ status: 'success' });
+exports.resetPassword = async (req, res, next) => {
+  const { token } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  //  HASH TOKEN
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  // FIND USER
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+  });
+
+  if (!user) {
+    return next(new AppError(`User for that token no longet exists.`, 400));
+  }
+
+  // CHECK IF TOKEN HAS EXPIRED
+  if (new Date(user.passwordResetExpires) < new Date(Date.now())) {
+    return next(new AppError(`Token has expired`, 400));
+  }
+
+  // IF PASSES ALL THE CHECKS, SET NEW PASSWORD
+  user.password = password;
+  user.confirmPassword = confirmPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  await user.save();
+
+  // If everything is ok send token to client
+  createSendToken(user, 200, req, res);
 };

@@ -79,6 +79,12 @@ usersSchema.pre('save', async function (next) {
   next();
 });
 
+usersSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+  this.changedPasswordAt = Date.now() - 1000;
+  next();
+});
+
 const User = mongoose.model('Users', usersSchema);
 
 module.exports = User;
