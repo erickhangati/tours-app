@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 import EyeIcon from './icons/EyeIcon';
 import EyeCrossedIcon from './icons/EyeCrossedIcon';
@@ -40,6 +41,37 @@ const ResetPassword = () => {
   const [formValues, setFormValues] = useState<FormData>(initialFormValues);
   const [formError, setFormError] = useState<ErrorData>(initialErrorValues);
   const [response, setResponse] = useState<ResponseData>(initialResponse);
+  const { token } = useParams();
+
+  const { isLoading, mutate } = useMutation({
+    mutationKey: ['reset-password'],
+    mutationFn: async () => {
+      const { data } = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/api/v1/users/reset-password/${token}`,
+        {
+          password: formValues.password,
+          confirmPassword: formValues.confirmPassword,
+        }
+      );
+      return data;
+    },
+    onSuccess(data) {
+      console.log(data);
+      setFormValues(() => initialFormValues);
+      setFormError(() => initialErrorValues);
+      setResponse(() => ({
+        isError: false,
+        message: 'Password reset successful',
+      }));
+    },
+    onError(error: any) {
+      console.log(error);
+      setResponse(() => ({
+        isError: true,
+        message: error.response.data.message,
+      }));
+    },
+  });
 
   const resetPasswordErrorHandler = () => {
     if (!formValues.password)
@@ -50,6 +82,11 @@ const ResetPassword = () => {
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formValues.password || !formValues.confirmPassword) {
+      resetPasswordErrorHandler();
+      return;
+    }
+    mutate();
   };
 
   return (
@@ -135,12 +172,12 @@ const ResetPassword = () => {
 
       <button
         className='px-6 py-3 text-white font-medium bg-green-600 hover:bg-green-600/70 transition rounded-md'
-        // disabled={signupIsLoading}
-        // style={{
-        //   backgroundColor: signupIsLoading ? '#e0e0e0' : '',
-        // }}
+        disabled={isLoading}
+        style={{
+          backgroundColor: isLoading ? '#e0e0e0' : '',
+        }}
       >
-        Reset Password
+        {isLoading ? 'Resetting Password...' : 'Reset Password'}
       </button>
     </form>
   );
