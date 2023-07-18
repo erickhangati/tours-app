@@ -136,6 +136,11 @@ exports.restrictTo =
     next();
   };
 
+exports.isLoggedIn = (req, res) => {
+  const { user } = req;
+  res.status(200).json({ status: 'success', user });
+};
+
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
 
