@@ -194,7 +194,7 @@ exports.resetPassword = async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new AppError(`User for that token no longer exists.`, 400));
+    return next(new AppError(`Invalid token`, 400));
   }
 
   // CHECK IF TOKEN HAS EXPIRED

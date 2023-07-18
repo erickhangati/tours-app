@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import EyeIcon from './icons/EyeIcon';
 import EyeCrossedIcon from './icons/EyeCrossedIcon';
@@ -42,8 +42,9 @@ const ResetPassword = () => {
   const [formError, setFormError] = useState<ErrorData>(initialErrorValues);
   const [response, setResponse] = useState<ResponseData>(initialResponse);
   const { token } = useParams();
+  const navigate = useNavigate();
 
-  const { isLoading, mutate } = useMutation({
+  const { isLoading, mutate, isSuccess } = useMutation({
     mutationKey: ['reset-password'],
     mutationFn: async () => {
       const { data } = await axios.patch(
@@ -72,6 +73,20 @@ const ResetPassword = () => {
       }));
     },
   });
+
+  const navigateAfterDelay = useCallback(() => {
+    // navigate('/');
+    console.log('Navigate away');
+  }, []);
+
+  useEffect(() => {
+    if (isSuccess) {
+      const delay = 3000; // Set the desired delay in milliseconds
+      const timeoutId = setTimeout(navigateAfterDelay, delay);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isSuccess, navigateAfterDelay]);
 
   const resetPasswordErrorHandler = () => {
     if (!formValues.password)
