@@ -8,6 +8,7 @@ import {
 import Tours from '../pages/Tours';
 import TourDetails from '../pages/TourDetails';
 import Login from '../pages/Login';
+import ResetPassword from '../pages/ResetPassword';
 import NotFound from '../pages/NotFound';
 import Nav from '../components/Nav';
 
@@ -17,6 +18,7 @@ const router = createBrowserRouter(
       <Route index element={<Tours />} />
       <Route path='/:tourId' element={<TourDetails />} />
       <Route path='/login' element={<Login />} />
+      <Route path='/reset-password/:token' element={<ResetPassword />} />
       <Route path='/not-found' element={<NotFound />} />
       <Route path='*' element={<NotFound />} />
     </Route>
