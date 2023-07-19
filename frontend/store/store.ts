@@ -1,28 +1,5 @@
 import { create } from 'zustand';
-import { Tour, Tours } from '../data/type';
-
-export interface Data {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
-
-interface PostState {
-  post: Data | null;
-  setPost: (post: Data | ((prevPost: Data | null) => Data)) => void;
-}
-
-export const usePostStore = create<PostState>()((set) => ({
-  post: null,
-  setPost: (post: Data | ((prevPost: Data | null) => Data)) => {
-    if (typeof post === 'function') {
-      set((state) => ({ post: post(state.post) }));
-    } else {
-      set({ post });
-    }
-  },
-}));
+import { User, Tour, Tours } from '../data/type';
 
 interface ToursState {
   tour: Tour | null;
@@ -36,4 +13,14 @@ export const useToursStore = create<ToursState>()((set) => ({
   setTour: (tour) => set({ tour }),
   tours: null,
   setTours: (tours) => set({ tours }),
+}));
+
+interface UserState {
+  user: User | null;
+  setUser: (user: User | null) => void;
+}
+
+export const useUserStore = create<UserState>()((set) => ({
+  user: null,
+  setUser: (user) => set({ user }),
 }));

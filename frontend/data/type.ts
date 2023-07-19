@@ -15,3 +15,8 @@ export interface Tour {
 }
 
 export type Tours = Tour[];
+
+export interface User {
+  name: string;
+  email: string;
+}

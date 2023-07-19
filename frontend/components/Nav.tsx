@@ -66,7 +66,7 @@ const Nav = () => {
             </li>
           )}
           {user && (
-            <li className='pr-4 text-slate-500 font-medium ml-auto'>{`Welcome, ${
+            <li className='text-slate-500 font-medium ml-auto'>{`Welcome, ${
               user?.name.split(' ')[0]
             }`}</li>
           )}
