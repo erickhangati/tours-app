@@ -79,6 +79,9 @@ const LoginForm = () => {
       setFormError(() => initialErrorValues);
       const message = `User with email ${data.data.user.email} created!`;
       setResponse(() => ({ isError: false, message }));
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
     },
     onError(error: any) {
       console.log(error.response.data);

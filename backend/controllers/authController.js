@@ -152,13 +152,10 @@ exports.isLoggedIn = async (req, res) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
-    console.log('Headers token: ', token);
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
-    console.log('Req cookies token: ', token);
   } else if (cookies.cookies.jwt) {
     token = cookies.cookies.jwt;
-    console.log('Cookies token: ', token);
   }
 
   // CHECK IF TOKEN AVAILABLE
@@ -183,9 +180,10 @@ exports.isLoggedIn = async (req, res) => {
 
   // CHECK IF PASSWORD CHANGED
   if (checkedUser.changedPassword(decoded.iat)) {
-    res
-      .status(200)
-      .json({ status: 'success', user: null, message: 'Password changed' });
+    console.log(checkedUser.changedPassword(decoded.iat));
+    // res
+    //   .status(200)
+    //   .json({ status: 'success', user: null, message: 'Password changed' });
     return;
   }
 

@@ -22,10 +22,16 @@ const Nav = () => {
       return data.user;
     },
     onSuccess(data) {
+      console.log(data);
+      if (data === null) {
+        setUser(() => null);
+        return;
+      }
       setUser(() => ({ email: data.email, name: data.name }));
     },
     onError(error: any) {
       console.log(error);
+      setUser(() => null);
     },
   });
 
@@ -60,7 +66,9 @@ const Nav = () => {
             </li>
           )}
           {user && (
-            <li className='pr-4 text-slate-500 font-medium ml-auto'>{`Welcome, ${user?.name}`}</li>
+            <li className='pr-4 text-slate-500 font-medium ml-auto'>{`Welcome, ${
+              user?.name.split(' ')[0]
+            }`}</li>
           )}
         </ul>
       </nav>
