@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 import EyeIcon from '../components/icons/EyeIcon';
 import EyeCrossedIcon from '../components/icons/EyeCrossedIcon';
@@ -50,6 +51,7 @@ const LoginForm = () => {
   const [formValues, setFormValues] = useState<FormData>(initialFormValues);
   const [formError, setFormError] = useState<ErrorData>(initialErrorValues);
   const [response, setResponse] = useState<ResponseData>(initialResponse);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isLogin && !isForgotPassword) document.title = 'Login';
@@ -103,6 +105,9 @@ const LoginForm = () => {
       console.log(data);
       setFormValues(() => initialFormValues);
       setFormError(() => initialErrorValues);
+      setTimeout(() => {
+        navigate('/');
+      }, 3000);
     },
     onError(error: any) {
       console.log(error.response.data);
