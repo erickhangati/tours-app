@@ -78,6 +78,7 @@ const LoginForm = () => {
         {
           name: formValues.name,
           email: formValues.email,
+          photo: 'default.jpg',
           password: formValues.password,
           confirmPassword: formValues.confirmPassword,
         }

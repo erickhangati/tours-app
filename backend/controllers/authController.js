@@ -48,7 +48,7 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 exports.signUp = catchAsync(async (req, res) => {
-  const { name, email, password, confirmPassword, changedPasswordAt } =
+  const { name, email, photo, password, confirmPassword, changedPasswordAt } =
     req.body;
 
   // CHECK FOR EXISTING USER
@@ -65,6 +65,7 @@ exports.signUp = catchAsync(async (req, res) => {
   const user = await User.create({
     name,
     email,
+    photo,
     password,
     confirmPassword,
     changedPasswordAt,
