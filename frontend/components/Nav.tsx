@@ -1,8 +1,28 @@
+import { useState } from 'react';
 import { NavLink, Outlet, useParams, useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 const Nav = () => {
   const { tourId } = useParams();
   const { pathname } = useLocation();
+  const [user, setUser] = useState(null);
+
+  useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/users/login`
+      );
+      return data;
+    },
+    onSuccess(data) {
+      console.log(data);
+    },
+    onError(error: any) {
+      console.log(error, 'Reached here');
+    },
+  });
 
   return (
     <>

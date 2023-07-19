@@ -5,7 +5,7 @@ const authControllers = require('../controllers/authController');
 
 router
   .route('/login')
-  .get(authControllers.protect, authControllers.isLoggedIn)
+  .get(authControllers.isLoggedIn)
   .post(authControllers.login);
 
 router.route('/sign-up').post(authControllers.signUp);

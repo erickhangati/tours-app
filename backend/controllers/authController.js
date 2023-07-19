@@ -136,9 +136,44 @@ exports.restrictTo =
     next();
   };
 
-exports.isLoggedIn = (req, res) => {
-  const { user } = req;
-  res.status(200).json({ status: 'success', user });
+exports.isLoggedIn = async (req, res) => {
+  // GET TOKEN
+
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+
+  // CHECK IF TOKEN AVAILABLE
+  if (!token) {
+    res.status(200).json({ status: 'success', user: null });
+    return;
+  }
+
+  // VERIFY TOKEN
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  // CHECK IF USER EXISTS
+  const checkedUser = await User.findOne({ _id: decoded.id });
+  if (!checkedUser) {
+    res.status(200).json({ status: 'success', user: null });
+    return;
+  }
+
+  // CHECK IF PASSWORD CHANGED
+  if (checkedUser.changedPassword(decoded.iat)) {
+    res.status(200).json({ status: 'success', user: null });
+    return;
+  }
+
+  req.user = checkedUser;
+  res.status(200).json({ status: 'success', user: checkedUser });
 };
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
