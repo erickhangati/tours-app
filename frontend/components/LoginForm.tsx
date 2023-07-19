@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
+import { useUserStore } from '../store/store';
+
 import EyeIcon from '../components/icons/EyeIcon';
 import EyeCrossedIcon from '../components/icons/EyeCrossedIcon';
 
@@ -51,13 +53,22 @@ const LoginForm = () => {
   const [formValues, setFormValues] = useState<FormData>(initialFormValues);
   const [formError, setFormError] = useState<ErrorData>(initialErrorValues);
   const [response, setResponse] = useState<ResponseData>(initialResponse);
+  const { user, setUser } = useUserStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isLogin && !isForgotPassword) document.title = 'Login';
     if (!isLogin && !isForgotPassword) document.title = 'Sign Up';
     if (!isLogin && isForgotPassword) document.title = 'Reset Password';
-  }, [isLogin, isForgotPassword]);
+
+    if (user) {
+      const timeoutId = setTimeout(() => {
+        navigate('/');
+      }, 3000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [user, navigate, isLogin, isForgotPassword]);
 
   const { mutate: signUpMutate, isLoading: signupIsLoading } = useMutation({
     mutationKey: ['login'],
@@ -79,9 +90,7 @@ const LoginForm = () => {
       setFormError(() => initialErrorValues);
       const message = `User with email ${data.data.user.email} created!`;
       setResponse(() => ({ isError: false, message }));
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
+      setUser({ name: data.data.user.name, email: data.data.user.email });
     },
     onError(error: any) {
       console.log(error.response.data);
@@ -108,9 +117,7 @@ const LoginForm = () => {
       console.log(data);
       setFormValues(() => initialFormValues);
       setFormError(() => initialErrorValues);
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
+      setUser({ name: data.data.user.name, email: data.data.user.email });
     },
     onError(error: any) {
       console.log(error.response.data);
@@ -119,6 +126,7 @@ const LoginForm = () => {
         isError: true,
         message: error.response.data.message,
       }));
+      setUser(null);
     },
   });
 

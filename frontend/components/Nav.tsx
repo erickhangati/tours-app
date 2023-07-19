@@ -1,17 +1,13 @@
-import { useState } from 'react';
 import { NavLink, Outlet, useParams, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-interface UserData {
-  email: string;
-  name: string;
-}
+import { useUserStore } from '../store/store';
 
 const Nav = () => {
   const { tourId } = useParams();
   const { pathname } = useLocation();
-  const [user, setUser] = useState<UserData | null>(null);
+  const { user, setUser } = useUserStore();
 
   useQuery({
     queryKey: ['user'],
@@ -24,14 +20,14 @@ const Nav = () => {
     onSuccess(data) {
       console.log(data);
       if (data === null) {
-        setUser(() => null);
+        setUser(null);
         return;
       }
-      setUser(() => ({ email: data.email, name: data.name }));
+      setUser({ email: data.email, name: data.name });
     },
     onError(error: any) {
       console.log(error);
-      setUser(() => null);
+      setUser(null);
     },
   });
 

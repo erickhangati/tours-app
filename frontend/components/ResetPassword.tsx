@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
+
+import { useUserStore } from '../store/store';
 
 import EyeIcon from './icons/EyeIcon';
 import EyeCrossedIcon from './icons/EyeCrossedIcon';
@@ -41,10 +43,21 @@ const ResetPassword = () => {
   const [formValues, setFormValues] = useState<FormData>(initialFormValues);
   const [formError, setFormError] = useState<ErrorData>(initialErrorValues);
   const [response, setResponse] = useState<ResponseData>(initialResponse);
+  const { user, setUser } = useUserStore();
   const { token } = useParams();
   const navigate = useNavigate();
 
-  const { isLoading, mutate, isSuccess } = useMutation({
+  useEffect(() => {
+    if (user) {
+      const timeoutId = setTimeout(() => {
+        navigate('/');
+      }, 3000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [user, navigate]);
+
+  const { isLoading, mutate } = useMutation({
     mutationKey: ['reset-password'],
     mutationFn: async () => {
       const { data } = await axios.patch(
@@ -64,6 +77,7 @@ const ResetPassword = () => {
         isError: false,
         message: 'Password reset successful',
       }));
+      setUser({ name: data.data.user.name, email: data.data.user.email });
     },
     onError(error: any) {
       console.log(error);
@@ -71,22 +85,9 @@ const ResetPassword = () => {
         isError: true,
         message: error.response.data.message,
       }));
+      setUser(null);
     },
   });
-
-  const navigateAfterDelay = useCallback(() => {
-    // navigate('/');
-    console.log('Navigate away');
-  }, []);
-
-  useEffect(() => {
-    if (isSuccess) {
-      const delay = 3000; // Set the desired delay in milliseconds
-      const timeoutId = setTimeout(navigateAfterDelay, delay);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [isSuccess, navigateAfterDelay]);
 
   const resetPasswordErrorHandler = () => {
     if (!formValues.password)
