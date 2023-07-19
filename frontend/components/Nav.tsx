@@ -1,10 +1,4 @@
-import {
-  NavLink,
-  Link,
-  Outlet,
-  useParams,
-  useLocation,
-} from 'react-router-dom';
+import { NavLink, Outlet, useParams, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
