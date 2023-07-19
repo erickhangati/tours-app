@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import axios from 'axios';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -11,6 +12,10 @@ const TourDetails = () => {
   const { tourId } = params;
   const navigate = useNavigate();
   const { tour, setTour } = useToursStore();
+
+  useEffect(() => {
+    document.title = tour?.name ? tour?.name : 'Loading tour';
+  }, [tour]);
 
   const { isLoading: queryIsLoading } = useQuery({
     queryKey: ['tour'],

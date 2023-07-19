@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 
@@ -50,6 +50,12 @@ const LoginForm = () => {
   const [formValues, setFormValues] = useState<FormData>(initialFormValues);
   const [formError, setFormError] = useState<ErrorData>(initialErrorValues);
   const [response, setResponse] = useState<ResponseData>(initialResponse);
+
+  useEffect(() => {
+    if (isLogin && !isForgotPassword) document.title = 'Login';
+    if (!isLogin && !isForgotPassword) document.title = 'Sign Up';
+    if (!isLogin && isForgotPassword) document.title = 'Reset Password';
+  }, [isLogin, isForgotPassword]);
 
   const { mutate: signUpMutate, isLoading: signupIsLoading } = useMutation({
     mutationKey: ['login'],
