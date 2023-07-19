@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Oval } from 'react-loader-spinner';
-import { Helmet } from 'react-helmet';
 
 import { Tour } from '../data/type';
 import { useToursStore } from '../store/store';
@@ -90,9 +89,6 @@ const TourDetails = () => {
   if (queryIsLoading)
     return (
       <>
-        <Helmet>
-          <title>Tour loading...</title>
-        </Helmet>
         <main className='mx-auto min-h-screen'>
           <div className='absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2'>
             <Oval
@@ -114,9 +110,6 @@ const TourDetails = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{queryIsLoading ? 'Tour loading...' : tour?.name}</title>
-      </Helmet>
       <div
         className='w-full h-96 bg-cover bg-center rounded-lg  mb-6'
         style={{

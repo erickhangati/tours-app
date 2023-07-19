@@ -152,7 +152,9 @@ exports.isLoggedIn = async (req, res) => {
 
   // CHECK IF TOKEN AVAILABLE
   if (!token) {
-    res.status(200).json({ status: 'success', user: null });
+    res
+      .status(200)
+      .json({ status: 'success', user: null, message: 'Invalid token' });
     return;
   }
 
@@ -162,13 +164,17 @@ exports.isLoggedIn = async (req, res) => {
   // CHECK IF USER EXISTS
   const checkedUser = await User.findOne({ _id: decoded.id });
   if (!checkedUser) {
-    res.status(200).json({ status: 'success', user: null });
+    res
+      .status(200)
+      .json({ status: 'success', user: null, message: 'User not found' });
     return;
   }
 
   // CHECK IF PASSWORD CHANGED
   if (checkedUser.changedPassword(decoded.iat)) {
-    res.status(200).json({ status: 'success', user: null });
+    res
+      .status(200)
+      .json({ status: 'success', user: null, message: 'Password changed' });
     return;
   }
 

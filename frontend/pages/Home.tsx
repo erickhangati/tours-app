@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 
 import { usePostStore, Data } from '../store/store';
 
@@ -31,9 +30,6 @@ const Home = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Home page</title>
-      </Helmet>
       <h1>Home</h1>
     </>
   );
