@@ -11,6 +11,7 @@ import Login from '../pages/Login';
 import ResetPassword from '../pages/ResetPassword';
 import NotFound from '../pages/NotFound';
 import Nav from '../components/Nav';
+import Profile from '../pages/Profile';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,6 +19,7 @@ const router = createBrowserRouter(
       <Route index element={<Tours />} />
       <Route path='/:tourId' element={<TourDetails />} />
       <Route path='/login' element={<Login />} />
+      <Route path='/profile' element={<Profile />} />
       <Route path='/reset-password/:token' element={<ResetPassword />} />
       <Route path='/not-found' element={<NotFound />} />
       <Route path='*' element={<NotFound />} />
