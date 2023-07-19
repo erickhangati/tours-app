@@ -3,10 +3,15 @@ import { NavLink, Outlet, useParams, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
+interface UserData {
+  email: string;
+  name: string;
+}
+
 const Nav = () => {
   const { tourId } = useParams();
   const { pathname } = useLocation();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UserData | null>(null);
 
   useQuery({
     queryKey: ['user'],
@@ -14,13 +19,13 @@ const Nav = () => {
       const { data } = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/v1/users/login`
       );
-      return data;
+      return data.user;
     },
     onSuccess(data) {
-      console.log(data);
+      setUser(() => ({ email: data.email, name: data.name }));
     },
     onError(error: any) {
-      console.log(error, 'Reached here');
+      console.log(error);
     },
   });
 
@@ -40,18 +45,23 @@ const Nav = () => {
               Tours
             </NavLink>
           </li>
-          <li className='pr-4 ml-auto'>
-            <NavLink
-              to='/login'
-              className={(navData) =>
-                navData.isActive
-                  ? 'text-blue-500 font-medium'
-                  : 'text-slate-500 font-medium'
-              }
-            >
-              Login / Sign Up
-            </NavLink>
-          </li>
+          {!user && (
+            <li className='pr-4 ml-auto'>
+              <NavLink
+                to='/login'
+                className={(navData) =>
+                  navData.isActive
+                    ? 'text-blue-500 font-medium'
+                    : 'text-slate-500 font-medium'
+                }
+              >
+                Login / Sign Up
+              </NavLink>
+            </li>
+          )}
+          {user && (
+            <li className='pr-4 text-slate-500 font-medium ml-auto'>{`Welcome, ${user?.name}`}</li>
+          )}
         </ul>
       </nav>
       <Outlet />

@@ -2,10 +2,13 @@ const User = require('../models/usersModel');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const crypto = require('crypto');
+const Cookies = require('universal-cookie');
 
 const { catchAsync } = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
+
+const cookies = new Cookies();
 
 const getToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -27,6 +30,11 @@ const createSendToken = (user, statusCode, req, res) => {
     cookieOptions.secure = true;
 
   res.cookie('jwt', token, cookieOptions);
+  cookies.set('jwt', token, {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+  });
 
   user.password = undefined;
 
@@ -91,7 +99,6 @@ exports.login = catchAsync(async (req, res, next) => {
 
 exports.protect = async (req, res, next) => {
   // GET TOKEN
-
   let token;
 
   if (
@@ -138,7 +145,6 @@ exports.restrictTo =
 
 exports.isLoggedIn = async (req, res) => {
   // GET TOKEN
-
   let token;
 
   if (
@@ -146,8 +152,13 @@ exports.isLoggedIn = async (req, res) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+    console.log('Headers token: ', token);
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
+    console.log('Req cookies token: ', token);
+  } else if (cookies.cookies.jwt) {
+    token = cookies.cookies.jwt;
+    console.log('Cookies token: ', token);
   }
 
   // CHECK IF TOKEN AVAILABLE
