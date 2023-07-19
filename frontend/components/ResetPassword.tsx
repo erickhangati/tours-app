@@ -77,7 +77,11 @@ const ResetPassword = () => {
         isError: false,
         message: 'Password reset successful',
       }));
-      setUser({ name: data.data.user.name, email: data.data.user.email });
+      setUser({
+        name: data.data.user.name,
+        email: data.data.user.email,
+        photo: data.data.user.photo,
+      });
     },
     onError(error: any) {
       console.log(error);

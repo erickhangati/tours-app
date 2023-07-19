@@ -91,7 +91,11 @@ const LoginForm = () => {
       setFormError(() => initialErrorValues);
       const message = `User with email ${data.data.user.email} created!`;
       setResponse(() => ({ isError: false, message }));
-      setUser({ name: data.data.user.name, email: data.data.user.email });
+      setUser({
+        name: data.data.user.name,
+        email: data.data.user.email,
+        photo: data.data.user.photo,
+      });
     },
     onError(error: any) {
       console.log(error.response.data);
@@ -118,7 +122,11 @@ const LoginForm = () => {
       console.log(data);
       setFormValues(() => initialFormValues);
       setFormError(() => initialErrorValues);
-      setUser({ name: data.data.user.name, email: data.data.user.email });
+      setUser({
+        name: data.data.user.name,
+        email: data.data.user.email,
+        photo: data.data.user.photo,
+      });
     },
     onError(error: any) {
       console.log(error.response.data);

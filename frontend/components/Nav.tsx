@@ -1,4 +1,10 @@
-import { NavLink, Outlet, useParams, useLocation } from 'react-router-dom';
+import {
+  NavLink,
+  Link,
+  Outlet,
+  useParams,
+  useLocation,
+} from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -23,7 +29,7 @@ const Nav = () => {
         setUser(null);
         return;
       }
-      setUser({ email: data.email, name: data.name });
+      setUser({ name: data.name, email: data.email, photo: data.photo });
     },
     onError(error: any) {
       console.log(error);
@@ -40,8 +46,8 @@ const Nav = () => {
               to='/'
               className={(navData) =>
                 navData.isActive || pathname === `/${tourId}`
-                  ? 'text-blue-500 font-medium'
-                  : 'text-slate-500 font-medium'
+                  ? 'text-blue-500 font-medium text-xl'
+                  : 'text-slate-500 font-medium text-xl'
               }
             >
               Tours
@@ -53,8 +59,8 @@ const Nav = () => {
                 to='/login'
                 className={(navData) =>
                   navData.isActive
-                    ? 'text-blue-500 font-medium'
-                    : 'text-slate-500 font-medium'
+                    ? 'text-blue-500 font-medium text-xl'
+                    : 'text-slate-500 font-medium text-xl'
                 }
               >
                 Login / Sign Up
@@ -62,9 +68,16 @@ const Nav = () => {
             </li>
           )}
           {user && (
-            <li className='text-slate-500 font-medium ml-auto'>{`Welcome, ${
-              user?.name.split(' ')[0]
-            }`}</li>
+            <li className='text-slate-500 font-medium ml-auto flex items-center gap-6'>
+              <span>{`Welcome, ${user?.name.split(' ')[0]}`}</span>
+              <NavLink to='/profile'>
+                <img
+                  className='w-12 rounded-full'
+                  src={`/img/users/${user.photo}`}
+                  alt=''
+                />
+              </NavLink>
+            </li>
           )}
         </ul>
       </nav>
