@@ -181,10 +181,9 @@ exports.isLoggedIn = async (req, res) => {
 
   // CHECK IF PASSWORD CHANGED
   if (checkedUser.changedPassword(decoded.iat)) {
-    console.log(checkedUser.changedPassword(decoded.iat));
-    // res
-    //   .status(200)
-    //   .json({ status: 'success', user: null, message: 'Password changed' });
+    res
+      .status(200)
+      .json({ status: 'success', user: null, message: 'Password changed' });
     return;
   }
 
@@ -269,3 +268,13 @@ exports.resetPassword = async (req, res, next) => {
   // If everything is ok send token to client
   createSendToken(user, 200, req, res);
 };
+
+exports.updatePassword = catchAsync(async (req, res) => {
+  const user = req.user;
+
+  if (!user) {
+    return next(new AppError(`User does not exist`, 404));
+  }
+
+  res.status(200).json({ status: 'success', user });
+});
