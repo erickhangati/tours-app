@@ -18,4 +18,8 @@ router
   .route('/update-me')
   .patch(authControllers.protect, usersControllers.updateMe);
 
+router
+  .route('/delete-me')
+  .patch(authControllers.protect, usersControllers.deleteUser);
+
 module.exports = router;
