@@ -36,6 +36,11 @@ const usersSchema = new Schema({
   changedPasswordAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 usersSchema.methods.correctPassword = async function (
