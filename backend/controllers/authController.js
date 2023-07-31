@@ -26,8 +26,8 @@ const createSendToken = (user, statusCode, req, res) => {
     httpOnly: true,
   };
 
-  if (req.secure || req.headers['x-forward-proto'] === 'https')
-    cookieOptions.secure = true;
+  // if (req.secure || req.headers['x-forward-proto'] === 'https')
+  //   cookieOptions.secure = true;
 
   res.cookie('jwt', token, cookieOptions);
   cookies.set('jwt', token, {
@@ -270,11 +270,33 @@ exports.resetPassword = async (req, res, next) => {
 };
 
 exports.updatePassword = catchAsync(async (req, res) => {
-  const user = req.user;
+  // Get user from collection
+  const user = await User.findOne({ email: req.user.email }).select(
+    '+password'
+  );
 
   if (!user) {
     return next(new AppError(`User does not exist`, 404));
   }
+
+  // Check if old password entered is correct
+  const checkPassword = await user.correctPassword(
+    req.body.oldPassword,
+    user.password
+  );
+
+  if (!checkPassword) {
+    return next(new AppError(`Entered wrong password`, 400));
+  }
+
+  // Update password
+  user.password = req.body.newPassword;
+  user.confirmPassword = req.body.confirmPassword;
+
+  await user.save();
+
+  // Log in user and send JWT token
+  createSendToken(user, 200, res);
 
   res.status(200).json({ status: 'success', user });
 });

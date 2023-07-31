@@ -53,7 +53,7 @@ usersSchema.methods.changedPassword = function (JWTTimestamp) {
       10
     );
 
-    return JWTTimestamp > changedTimestamp;
+    return JWTTimestamp < changedTimestamp;
   }
 
   return false;
