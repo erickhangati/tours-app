@@ -20,6 +20,6 @@ router
 
 router
   .route('/delete-me')
-  .patch(authControllers.protect, usersControllers.deleteUser);
+  .delete(authControllers.protect, usersControllers.deleteUser);
 
 module.exports = router;
