@@ -30,11 +30,6 @@ const createSendToken = (user, statusCode, req, res) => {
     cookieOptions.secure = true;
 
   res.cookie('jwt', token, cookieOptions);
-  cookies.set('jwt', token, {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
-  });
 
   user.password = undefined;
 
