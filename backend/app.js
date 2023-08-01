@@ -11,6 +11,7 @@ const hpp = require('hpp');
 const toursRoutes = require('./routes/toursRoutes');
 const personsRoutes = require('./routes/personsRoutes');
 const usersRoutes = require('./routes/usersRoutes');
+const reviewsRoutes = require('./routes/reviewsRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandling = require('./controllers/errorController');
 
@@ -42,9 +43,9 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/tours', toursRoutes);
-app.use('/api/v1/tours/:id', toursRoutes);
-app.use('/api/v1/persons', personsRoutes);
 app.use('/api/v1/users', usersRoutes);
+app.use('/api/v1/reviews', reviewsRoutes);
+app.use('/api/v1/persons', personsRoutes);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`));
