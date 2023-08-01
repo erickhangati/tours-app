@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const toursRoutes = require('./routes/toursRoutes');
 const personsRoutes = require('./routes/personsRoutes');
@@ -17,6 +18,7 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(helmet());
 
 const limiter = rateLimit({
   max: 100,
