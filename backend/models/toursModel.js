@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./usersModel');
 
 const toursSchema = mongoose.Schema(
   {
@@ -106,6 +107,12 @@ const toursSchema = mongoose.Schema(
 //   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
 //   next();
 // });
+
+toursSchema.pre('save', async function (next) {
+  const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+  this.guides = await Promise.all(guidesPromises);
+  next();
+});
 
 const Tour = mongoose.model('Tour', toursSchema);
 
