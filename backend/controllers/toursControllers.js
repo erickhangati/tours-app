@@ -73,7 +73,7 @@ exports.getTours = catchAsync(async (req, res) => {
 });
 
 exports.getTour = catchAsync(async (req, res) => {
-  const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id).populate('guides');
 
   if (!tour)
     return next(new AppError(`Cannot find tour with id ${req.params.id}`), 404);

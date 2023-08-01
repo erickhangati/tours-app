@@ -17,7 +17,15 @@ const usersSchema = new Schema({
     match: /.+\@.+\..+/,
     lowercase: true,
   },
-  photo: String,
+  photo: {
+    type: String,
+    default: 'default.jpg',
+  },
+  role: {
+    type: String,
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
+    default: 'user',
+  },
   password: {
     type: String,
     required: [true, 'Please provide a password'],
@@ -90,6 +98,6 @@ usersSchema.pre('save', function (next) {
   next();
 });
 
-const User = mongoose.model('Users', usersSchema);
+const User = mongoose.model('User', usersSchema);
 
 module.exports = User;
