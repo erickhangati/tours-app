@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 
 const toursRoutes = require('./routes/toursRoutes');
 const personsRoutes = require('./routes/personsRoutes');
@@ -14,9 +16,10 @@ const globalErrorHandling = require('./controllers/errorController');
 const app = express();
 
 app.use(cors());
-
 app.use(cookieParser());
 app.use(express.json());
+app.use(mongoSanitize());
+app.use(xss());
 app.use(morgan('dev'));
 app.use(helmet());
 
