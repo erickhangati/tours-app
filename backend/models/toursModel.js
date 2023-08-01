@@ -98,15 +98,19 @@ const toursSchema = mongoose.Schema(
 //   next();
 // });
 
-// toursSchema.post('save', (doc, next) => {
-//   console.log(doc);
-//   next();
-// });
-
 // toursSchema.pre('aggregate', function (next) {
 //   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
 //   next();
 // });
+
+toursSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-changedPasswordAt -__v',
+  });
+
+  next();
+});
 
 toursSchema.pre('save', async function (next) {
   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
