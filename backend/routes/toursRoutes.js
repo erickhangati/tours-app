@@ -32,6 +32,7 @@ router
   .patch(toursControllers.updateTour)
   .delete(toursControllers.deleteTour);
 
-router.route('/:id/reviews').get(toursControllers.getTourReviews);
+router.route('/:tourId/reviews').get(toursControllers.getTourReviews);
+router.route('/:tourId/reviews/:reviewId').get(toursControllers.getReview);
 
 module.exports = router;

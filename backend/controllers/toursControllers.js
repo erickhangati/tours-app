@@ -167,9 +167,21 @@ exports.secretTours = (req, res, next) => {
 };
 
 exports.getTourReviews = catchAsync(async (req, res) => {
-  const reviews = await Review.find({ tour: req.params.id });
+  const reviews = await Review.find({ tour: req.params.tourId });
   res.status(200).json({
     status: 'success',
     reviews,
+  });
+});
+
+exports.getReview = catchAsync(async (req, res) => {
+  const review = await Review.findOne({
+    _id: req.params.reviewId,
+    tour: req.params.tourId,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    review,
   });
 });
