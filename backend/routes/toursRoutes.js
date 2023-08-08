@@ -1,10 +1,13 @@
 const express = require('express');
 const toursControllers = require('../controllers/toursControllers');
+const reviewsRoutes = require('./reviewsRoutes');
 const authControllers = require('../controllers/authController');
 
 const router = express.Router();
 
 router.param('id', toursControllers.checkTourId);
+
+router.use('/:tourId/reviews', reviewsRoutes);
 
 router
   .route('/')
@@ -31,8 +34,5 @@ router
   .get(toursControllers.getTour)
   .patch(toursControllers.updateTour)
   .delete(toursControllers.deleteTour);
-
-router.route('/:tourId/reviews').get(toursControllers.getTourReviews);
-router.route('/:tourId/reviews/:reviewId').get(toursControllers.getReview);
 
 module.exports = router;
