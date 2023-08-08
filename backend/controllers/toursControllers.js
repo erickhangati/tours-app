@@ -1,4 +1,5 @@
 const Tour = require('../models/toursModel');
+const Review = require('../models/reviewsModel');
 const { catchAsync } = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
@@ -73,7 +74,7 @@ exports.getTours = catchAsync(async (req, res) => {
 });
 
 exports.getTour = catchAsync(async (req, res) => {
-  const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id).populate('reviews');
 
   if (!tour)
     return next(new AppError(`Cannot find tour with id ${req.params.id}`), 404);
@@ -164,3 +165,11 @@ exports.secretTours = (req, res, next) => {
   req.body.secretTour = true;
   next();
 };
+
+exports.getTourReviews = catchAsync(async (req, res) => {
+  const reviews = await Review.find({ tour: req.params.id });
+  res.status(200).json({
+    status: 'success',
+    reviews,
+  });
+});

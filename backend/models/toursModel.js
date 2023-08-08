@@ -118,6 +118,12 @@ toursSchema.pre('save', async function (next) {
   next();
 });
 
+toursSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
+
 const Tour = mongoose.model('Tour', toursSchema);
 
 module.exports = Tour;
