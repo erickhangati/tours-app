@@ -1,10 +1,14 @@
 const AppError = require('../utils/appError');
-const catchAsync = require('../utils/catchAsync');
+const { catchAsync } = require('../utils/catchAsync');
 
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndDelete(req.params.id);
+    let id;
+    if (req.params.reviewId) id = req.params.reviewId;
+
+    const doc = await Model.findByIdAndDelete(id);
     if (!doc) return next(new AppError('Cannot find document', 404));
+
     res.status(204).json({
       status: 'success',
       data: null,
