@@ -16,6 +16,11 @@ router
 router
   .route('/:reviewId')
   .get(reviewsController.getReview)
+  .patch(
+    authController.protect,
+    authController.restrictTo('user'),
+    reviewsController.updateReview
+  )
   .delete(
     authController.protect,
     authController.restrictTo('user'),
