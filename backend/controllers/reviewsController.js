@@ -1,6 +1,7 @@
 const Review = require('../models/reviewsModel');
 const { catchAsync } = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const handlerFactory = require('./handlerFactory');
 
 exports.getTourReviews = catchAsync(async (req, res) => {
   const reviews = await Review.find({ tour: req.params.tourId });
