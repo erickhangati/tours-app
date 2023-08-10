@@ -30,7 +30,7 @@ router
   .get(toursControllers.secretTours, toursControllers.getTours);
 
 router
-  .route('/:id')
+  .route('/:tourId')
   .get(toursControllers.getTour)
   .patch(toursControllers.updateTour)
   .delete(toursControllers.deleteTour);

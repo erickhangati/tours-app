@@ -1,5 +1,6 @@
 const User = require('../models/usersModel');
 const { catchAsync } = require('../utils/catchAsync');
+const factory = require('./handlerFactory');
 
 // Filter allowed fields from the req.body
 const filteredObj = (obj, ...allowedFields) => {
@@ -41,11 +42,4 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteUser = catchAsync(async (req, res) => {
-  await User.findByIdAndUpdate(req.user.id, { active: false });
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+exports.deleteUser = factory.updateOne(User);

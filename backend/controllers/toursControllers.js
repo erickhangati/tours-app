@@ -1,10 +1,10 @@
 const Tour = require('../models/toursModel');
-const Review = require('../models/reviewsModel');
 const { catchAsync } = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
 
 exports.checkTourId = catchAsync(async (req, res, next, val) => {
-  const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.tourId);
 
   if (!tour)
     return next(new AppError(`Cannot find tour with id ${req.params.id}`), 404);
@@ -73,11 +73,14 @@ exports.getTours = catchAsync(async (req, res) => {
     .json({ status: 'success', results: tours.length, data: tours });
 });
 
-exports.getTour = catchAsync(async (req, res) => {
-  const tour = await Tour.findById(req.params.id).populate('reviews');
+exports.getTour = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findById(req.params.tourId).populate('reviews');
 
   if (!tour)
-    return next(new AppError(`Cannot find tour with id ${req.params.id}`), 404);
+    return next(
+      new AppError(`Cannot find tour with id ${req.params.tourId}`),
+      404
+    );
 
   res.status(200).json({ status: 'success', data: tour });
 });
@@ -86,16 +89,6 @@ exports.createTour = catchAsync(async (req, res) => {
   const tour = { ...req.body, name: `New Tour: ${req.body.name}` };
   const response = await Tour.create(tour);
   res.status(200).json({ status: 'success', data: response });
-});
-
-exports.updateTour = catchAsync(async (req, res) => {
-  const tour = await Tour.updateOne({ _id: req.params.id }, { $set: req.body });
-  res.status(200).json({ status: 'success', data: tour });
-});
-
-exports.deleteTour = catchAsync(async (req, res) => {
-  const tour = await Tour.deleteOne({ _id: req.params.id });
-  res.status(200).json({ status: 'success', data: tour });
 });
 
 exports.top5Cheap = (req, res, next) => {
@@ -165,3 +158,6 @@ exports.secretTours = (req, res, next) => {
   req.body.secretTour = true;
   next();
 };
+
+exports.updateTour = factory.updateOne(Tour);
+exports.deleteTour = factory.deleteOne(Tour);
