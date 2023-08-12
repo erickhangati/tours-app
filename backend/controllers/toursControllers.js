@@ -85,12 +85,6 @@ exports.getTour = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: 'success', data: tour });
 });
 
-exports.createTour = catchAsync(async (req, res) => {
-  const tour = { ...req.body, name: `New Tour: ${req.body.name}` };
-  const response = await Tour.create(tour);
-  res.status(200).json({ status: 'success', data: response });
-});
-
 exports.top5Cheap = (req, res, next) => {
   req.query.limit = 5;
   req.query.sort = 'price,-ratingsAverage';
@@ -164,5 +158,6 @@ exports.tourId = (req, res, next) => {
   next();
 };
 
+exports.createTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
