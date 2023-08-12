@@ -10,6 +10,7 @@ router
   .post(
     authController.protect,
     authController.restrictTo('user'),
+    reviewsController.reviewBody,
     reviewsController.createReview
   );
 
@@ -19,11 +20,13 @@ router
   .patch(
     authController.protect,
     authController.restrictTo('user'),
+    reviewsController.reviewId,
     reviewsController.updateReview
   )
   .delete(
     authController.protect,
     authController.restrictTo('user'),
+    reviewsController.reviewId,
     reviewsController.deleteReview
   );
 

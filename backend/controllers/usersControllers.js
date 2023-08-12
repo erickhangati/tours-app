@@ -42,4 +42,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.userId = (req, res, next) => {
+  req.document.id = req.user.id;
+  next();
+};
+
 exports.deleteUser = factory.updateOne(User);

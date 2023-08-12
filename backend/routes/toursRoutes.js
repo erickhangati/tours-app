@@ -32,7 +32,7 @@ router
 router
   .route('/:tourId')
   .get(toursControllers.getTour)
-  .patch(toursControllers.updateTour)
-  .delete(toursControllers.deleteTour);
+  .patch(toursControllers.tourId, toursControllers.updateTour)
+  .delete(toursControllers.tourId, toursControllers.deleteTour);
 
 module.exports = router;

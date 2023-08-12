@@ -16,10 +16,18 @@ router
 
 router
   .route('/update-me')
-  .patch(authControllers.protect, usersControllers.updateMe);
+  .patch(
+    authControllers.protect,
+    usersControllers.userId,
+    usersControllers.updateMe
+  );
 
 router
   .route('/delete-me')
-  .delete(authControllers.protect, usersControllers.deleteUser);
+  .delete(
+    authControllers.protect,
+    usersControllers.userId,
+    usersControllers.deleteUser
+  );
 
 module.exports = router;

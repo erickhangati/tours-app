@@ -159,5 +159,10 @@ exports.secretTours = (req, res, next) => {
   next();
 };
 
+exports.tourId = (req, res, next) => {
+  req.document.id = req.params.tourId;
+  next();
+};
+
 exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
