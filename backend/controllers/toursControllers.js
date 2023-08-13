@@ -73,18 +73,6 @@ exports.getTours = catchAsync(async (req, res) => {
     .json({ status: 'success', results: tours.length, data: tours });
 });
 
-exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.tourId).populate('reviews');
-
-  if (!tour)
-    return next(
-      new AppError(`Cannot find tour with id ${req.params.tourId}`),
-      404
-    );
-
-  res.status(200).json({ status: 'success', data: tour });
-});
-
 exports.top5Cheap = (req, res, next) => {
   req.query.limit = 5;
   req.query.sort = 'price,-ratingsAverage';
@@ -154,10 +142,11 @@ exports.secretTours = (req, res, next) => {
 };
 
 exports.tourId = (req, res, next) => {
-  req.document.id = req.params.tourId;
+  req.documentId = req.params.tourId;
   next();
 };
 
+exports.getTour = factory.getOne(Tour);
 exports.createTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
